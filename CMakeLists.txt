@@ -24,7 +24,7 @@ endif()
 
 
 add_subdirectory(TestTask/libs/printer)
-
+add_subdirectory(TestTask/libs/fileCalculator)
 add_subdirectory(TestTask/libs/exampleProject)
 
 if(UNITTEST)
