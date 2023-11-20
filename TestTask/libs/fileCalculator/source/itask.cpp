@@ -2,20 +2,20 @@
 #include "taskMult.h"
 #include "taskSumSqr.h"
 
-// std::unique_ptr< ITask > TaskFactory::createTask( TaskParam param ) {
+std::unique_ptr< ITask > TaskFactory::createTask( TaskType type ) {
 
-// if( param == TaskParam::sum ) {
+    if( type == TaskType::sum ) {
 
-// return std::make_unique< TaskSum >();
+        return std::make_unique< TaskSum >();
 
-// } else if( param == TaskParam::mult )     {
+    } else if( type == TaskType::mult ) {
 
-// return std::make_unique< TaskMult >();
-// } else if( param == TaskParam::sumSqr )     {
+        return std::make_unique< TaskMult >();
+    } else if( type == TaskType::sumSqr ) {
 
-// return std::make_unique< TaskSumSqr >();
-// } else   {
-// return nullptr;
-// }
+        return std::make_unique< TaskSumSqr >();
+    } else {
+        return nullptr;
+    }
 
-// }
+}

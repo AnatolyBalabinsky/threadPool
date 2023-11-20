@@ -16,16 +16,19 @@ public:
     double getResult();
     virtual ~ITask() = default;
 
+protected:
+    ITask() = default;
+
 private:
 
 };
 
-// class TaskFactory {
+class TaskFactory {
 
-// public:
+public:
 
-// enum class TaskParam { sum, mult, sumSqr };
-// static std::unique_ptr< ITask > createTask( TaskParam param );
-// };
+    enum class TaskType { sum, mult, sumSqr };
+    static std::unique_ptr< ITask > createTask( TaskType param );
+};
 
 #endif
