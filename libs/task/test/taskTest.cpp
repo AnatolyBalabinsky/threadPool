@@ -3,7 +3,7 @@
 #include "task/taskMult.h"
 #include "task/taskSum.h"
 #include "task/taskSumSqr.h"
-#include "task/reader.h"
+#include "reader/reader.h"
 
 TEST( TaskTest, Creating ) {
 
