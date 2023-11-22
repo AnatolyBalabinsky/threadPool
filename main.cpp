@@ -1,10 +1,9 @@
 #include "printer/printer.h"
 
-int main()
-{
+int main() {
     Printing::Printer printer;
 
-    printer.print(" Hello Word! ");
+    printer.print( " Hello Word! " );
     std::cerr << " принтеров создано: " << Printing::Printer::getCountCreatedPrinters() << std::endl;
 
     Printing::Printer* ptrToprinter = nullptr;

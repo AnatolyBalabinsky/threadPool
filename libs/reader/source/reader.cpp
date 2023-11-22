@@ -1,4 +1,4 @@
-#include "reader.h"
+#include "reader/reader.h"
 
 Reader::Reader( const std::string& path ) : path( path ) {
 
