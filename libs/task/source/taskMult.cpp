@@ -2,7 +2,7 @@
 
 float TaskMult::process( const std::vector< float >& data ) {
 
-    float result = 0;
+    float result = 1;
     for( uint32_t i = 0; i != data.size(); i++ ) {
         result *= data[ i ];
     }

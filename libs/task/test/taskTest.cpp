@@ -27,4 +27,44 @@ TEST( TaskTest, Creating ) {
     ASSERT_EQ( sumSqrPtr, nullptr );
 }
 
+TEST( TaskTest, TaskMult ) {
 
+    TaskFactory taskFactory;
+    TaskFactory::TaskType type = TaskFactory::TaskType::mult;
+    auto task = taskFactory.createTask( type );
+
+    std::vector< float > data = { 1.2, 1.4, 5.5, 2, 2.65 };
+    float result =  task->process( data );
+    float expect = 48.972;
+
+    ASSERT_NEAR( result,  expect, 10e-6 );
+
+}
+
+TEST( TaskTest, TaskSum ) {
+
+    TaskFactory taskFactory;
+    TaskFactory::TaskType type = TaskFactory::TaskType::sum;
+    auto task = taskFactory.createTask( type );
+
+    std::vector< float > data = { 1.2, 1.4, 5.5, 2, 7.65 };
+    float result = task->process( data );
+    float expect = 17.75;
+
+    ASSERT_NEAR( result,  expect, 10e-6 );
+
+}
+
+TEST( TaskTest, TaskSumSqr ) {
+
+    TaskFactory taskFactory;
+    TaskFactory::TaskType type = TaskFactory::TaskType::sumSqr;
+    auto task = taskFactory.createTask( type );
+
+    std::vector< float > data = { 1.2, 1.4, 5.5, 2, 7.6 };
+    float result = task->process( data );
+
+    float expect = 95.41;
+    ASSERT_NEAR( result,  expect, 10e-6 );
+
+}
