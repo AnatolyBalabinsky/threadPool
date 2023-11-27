@@ -1,10 +1,6 @@
 #ifndef TASKMULT_H
 #define TASKMULT_H
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cstdint>
 #include "itask.h"
 
 class TaskMult: public ITask {

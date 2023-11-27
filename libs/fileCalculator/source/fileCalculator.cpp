@@ -1,4 +1,10 @@
+#include <filesystem>
+
 #include "fileCalculator/fileCalculator.h"
+#include "writer/writer.h"
+#include "task/taskMult.h"
+#include "task/taskSum.h"
+#include "task/taskSumSqr.h"
 
 float FileCalculator::oneThread( std::string dirPath ) {
 
@@ -46,12 +52,9 @@ float FileCalculator::oneThread( std::string dirPath ) {
     return result;
 }
 
-std::mutex mtx;
-
-void processing( std::vector< Reader::FileData >& fd, float& result, std::thread& read ) {
+void FileCalculator::processing( float& result, std::thread& read ) {
 
     TaskFactory factory;
-    TaskFactory::TaskType type;
     auto taskSum = factory.createTask( TaskFactory::TaskType::sum );
     auto taskMult = factory.createTask( TaskFactory::TaskType::mult );
     auto taskSumSqr = factory.createTask( TaskFactory::TaskType::sumSqr );
@@ -83,7 +86,7 @@ void processing( std::vector< Reader::FileData >& fd, float& result, std::thread
     }
 }
 
-void reading( std::string dirPath, std::vector< Reader::FileData >& fd ) {
+void FileCalculator::reading( std::string dirPath ) {
 
     std::filesystem::path directory( dirPath );
 
@@ -98,6 +101,7 @@ void reading( std::string dirPath, std::vector< Reader::FileData >& fd ) {
 
     for( ; begin != end; ++begin ) {
 
+
         if( begin->path().filename() == "out.dat" ) {
             continue;
         }
@@ -108,17 +112,15 @@ void reading( std::string dirPath, std::vector< Reader::FileData >& fd ) {
             fd.push_back( reader.getFileData() );
         }
     }
-
 }
 
 float FileCalculator::multipleThread( std::string dirPath ) {
 
-    std::vector< Reader::FileData > fd;
 
     float result = 0;
 
-    std::thread read( reading, dirPath, std::ref( fd )  );
-    std::thread proc( processing, std::ref( fd ), std::ref( result ), std::ref( read ) );
+    std::thread read( &FileCalculator::reading, this, dirPath );
+    std::thread proc( &FileCalculator::processing, this,  std::ref( result ), std::ref( read ) );
 
     read.join();
     proc.join();

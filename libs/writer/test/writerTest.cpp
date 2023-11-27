@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
-#include "writer/writer.h"
 #include <iostream>
 #include <fstream>
+
+#include "writer/writer.h"
 
 TEST( WriterTest, Write ) {
 

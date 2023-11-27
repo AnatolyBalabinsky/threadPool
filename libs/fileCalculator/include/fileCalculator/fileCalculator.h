@@ -2,16 +2,10 @@
 #define FILECALCULATOR_H
 
 #include <string>
-#include <iostream>
-#include <cstdint>
-#include <filesystem>
-#include "writer/writer.h"
-#include "task/taskMult.h"
-#include "task/taskSum.h"
-#include "task/taskSumSqr.h"
 #include <thread>
 #include <mutex>
-#include <condition_variable>
+#include <vector>
+
 #include "reader/reader.h"
 
 class FileCalculator {
@@ -23,7 +17,10 @@ public:
     float multipleThread( std::string dirPath );
 
 private:
-
+    void reading( std::string dirPath );
+    void processing( float& result, std::thread& read );
+    std::mutex mtx;
+    std::vector< Reader::FileData > fd;
 };
 
 #endif

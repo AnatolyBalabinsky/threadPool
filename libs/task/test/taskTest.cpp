@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "task/itask.h"
 #include "task/taskMult.h"
 #include "task/taskSum.h"
