@@ -101,16 +101,14 @@ void FileCalculator::reading( std::string dirPath ) {
 
     for( ; begin != end; ++begin ) {
 
-
+        std::lock_guard< std::mutex > lock( mtx );
         if( begin->path().filename() == "out.dat" ) {
             continue;
         }
 
         Reader reader( begin->path() );
-        {
-            std::lock_guard< std::mutex > lock( mtx );
-            fd.push_back( reader.getFileData() );
-        }
+        fd.push_back( reader.getFileData() );
+
     }
 }
 
