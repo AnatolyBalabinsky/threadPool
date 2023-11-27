@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-
 #include "reader/reader.h"
 #include "fileCalculator/fileCalculator.h"
 
@@ -30,3 +29,4 @@ TEST( FileCalculatorTest, ResultComparing ) {
     ASSERT_EQ( resMultiple, resOne );
 
 }
+
