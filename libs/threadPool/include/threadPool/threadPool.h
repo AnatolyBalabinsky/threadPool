@@ -12,30 +12,39 @@
 #include <atomic>
 #include <future>
 #include <unordered_set>
-#include <task/itask.h>
+
+#include "task/itask.h"
+#include "reader/reader.h"
 
 class ThreadPool {
 public:
 
-    ThreadPool( uint32_t threadCount );
+    ThreadPool( uint32_t& threadCount, std::string& dirPath );
 
-    void addTask( ITask* task );
+    void addTask( Reader::FileData fileData );
 
-    void start();
+    void stop();
+
+    float getResult();
 
 
 private:
 
-    void processing();
+    bool isReading = true;
+    bool threadsCreated = false;
+    float result = 0;
 
     uint32_t threadCount;
+    std::string dirPath;
+    std::mutex mtx;
+
+    void processing();
+    void reading();
+
+    std::thread read;
     std::vector< std::thread > threads;
 
-    std::queue< ITask* > taskQueue;
-
-    bool stopped = false;
-    std::mutex mtx;
-    std::condition_variable cv;
+    std::queue< Reader::FileData > taskQueue;
 
 };
 
