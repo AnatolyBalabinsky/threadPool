@@ -3,22 +3,13 @@
 
 #include <vector>
 
-#include "itask.h"
+#include "task/taskCalculate.h"
 
-class TaskSumSqr: public ITask {
+class TaskSumSqr: public TaskCalculate {
 public:
 
     void process() override;
     virtual ~TaskSumSqr() = default;
-
-    // TaskSumSqr( const std::vector< float >& data );
-    void setData( const std::vector< float >& data );
-    float getResult() const;
-
-private:
-    std::vector< float > data;
-    float result { };
-
 
 };
 

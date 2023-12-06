@@ -41,26 +41,12 @@ float FileCalculator::getFileResult( std::string filePath ) {
     Reader::FileData fd = reader.getFileData();
 
     auto task = TaskFactory::create( static_cast< TaskFactory::TaskType >( fd.operType ) );
+    auto taskCalc = dynamic_cast< TaskCalculate* >(  task.get() );
 
-    if( fd.operType == 1 ) {
-        dynamic_cast< TaskSum* >( task.get() )->setData( fd.fileData );
-        task->process();
-        return dynamic_cast< TaskSum* >( task.get() )->getResult();
-    }
+    taskCalc->setData( fd.fileData );
+    taskCalc->process();
 
-    if( fd.operType == 2 ) {
-        dynamic_cast< TaskMult* >( task.get() )->setData( fd.fileData );
-        task->process();
-        return dynamic_cast< TaskMult* >( task.get() )->getResult();
-    }
-
-    if( fd.operType == 3 ) {
-        dynamic_cast< TaskSumSqr* >( task.get() )->setData( fd.fileData );
-        task->process();
-        return dynamic_cast< TaskSumSqr* >( task.get() )->getResult();
-    }
-
-    return 0;
+    return taskCalc->getResult();
 }
 
 void FileCalculator::getFileResultWhrap( std::string filePath, float& result ) {
