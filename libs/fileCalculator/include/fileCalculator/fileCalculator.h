@@ -17,12 +17,11 @@ public:
     float multipleThread( std::string dirPath );
     float pool( uint32_t threadCount, std::string dirPath );
 
+    static float getFileResult( std::string filePath );
+    static void getFileResultWhrap( std::string filePath, float& result );
+    static std::vector< std::string > getFilesPaths( std::string dirPath );
+
 private:
-
-    float getFileResult( std::string filePath );
-    void getFileResultWhrap( std::string filePath, float& result );
-
-    std::vector< std::string > getFilesPaths( std::string dirPath );
 
     void reading( std::string dirPath );
     void processing( float& result, std::thread& read );

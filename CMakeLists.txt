@@ -24,7 +24,7 @@ add_subdirectory(libs/reader)
 add_subdirectory(libs/task)
 add_subdirectory(libs/writer)
 add_subdirectory(libs/fileCalculator)
-add_subdirectory(libs/threadPool)
+#add_subdirectory(libs/threadPool)
 #add_subdirectory(libs/threadPoolTask)
 
 if(UNITTEST)
@@ -34,7 +34,7 @@ endif()
 
 add_executable(tddProject main.cpp)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC reader task writer fileCalculator threadPool)
+target_link_libraries(${PROJECT_NAME} PUBLIC reader task writer fileCalculator) #threadPool)
 
 if(UNIX)
         add_custom_target( distclean COMMAND find . -name *_automoc.cpp -type f -delete

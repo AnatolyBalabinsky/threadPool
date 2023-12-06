@@ -3,10 +3,11 @@
 
 #include "fileCalculator/fileCalculator.h"
 #include "writer/writer.h"
+#include "task/taskfactory.h"
 #include "task/taskMult.h"
 #include "task/taskSum.h"
 #include "task/taskSumSqr.h"
-#include "threadPool/threadPool.h"
+// #include "threadPool/threadPool.h"
 
 std::vector< std::string > FileCalculator::getFilesPaths( std::string dirPath ) {
 
@@ -39,9 +40,27 @@ float FileCalculator::getFileResult( std::string filePath ) {
     Reader reader( filePath );
     Reader::FileData fd = reader.getFileData();
 
-    auto task = TaskFactory::createTask( static_cast< TaskFactory::TaskType >( fd.operType ) );
-    return task->process( fd.fileData );
+    auto task = TaskFactory::create( static_cast< TaskFactory::TaskType >( fd.operType ) );
 
+    if( fd.operType == 1 ) {
+        dynamic_cast< TaskSum* >( task.get() )->setData( fd.fileData );
+        task->process();
+        return dynamic_cast< TaskSum* >( task.get() )->getResult();
+    }
+
+    if( fd.operType == 2 ) {
+        dynamic_cast< TaskMult* >( task.get() )->setData( fd.fileData );
+        task->process();
+        return dynamic_cast< TaskMult* >( task.get() )->getResult();
+    }
+
+    if( fd.operType == 3 ) {
+        dynamic_cast< TaskSumSqr* >( task.get() )->setData( fd.fileData );
+        task->process();
+        return dynamic_cast< TaskSumSqr* >( task.get() )->getResult();
+    }
+
+    return 0;
 }
 
 void FileCalculator::getFileResultWhrap( std::string filePath, float& result ) {
@@ -78,7 +97,7 @@ float FileCalculator::multipleThread( std::string dirPath ) {
 
     for( uint32_t i = 0; i != filesPaths.size(); i++ ) {
 
-        threads.push_back( std::thread( &FileCalculator::getFileResultWhrap, this, filesPaths[ i ], std::ref( filesResults[ i ] ) ) );
+        threads.push_back( std::thread( FileCalculator::getFileResultWhrap, filesPaths[ i ], std::ref( filesResults[ i ] ) ) );
 
     }
 
@@ -96,10 +115,26 @@ float FileCalculator::multipleThread( std::string dirPath ) {
 
 float FileCalculator::pool( uint32_t threadCount, std::string dirPath ) {
 
-    ThreadPool pool( threadCount, dirPath );
-    pool.stop();
+    std::vector< std::string > filesPaths = getFilesPaths( dirPath );
 
-    return pool.getResult();
+    std::vector< float > filesResults( filesPaths.size() );
+    // ThreadPool pool( threadCount );
+
+    for( uint32_t i = 0; i != filesPaths.size(); i++ ) {
+
+
+        // pool.addTask();
+
+    }
+
+    // pool.stop();
+
+    float result = std::accumulate( filesResults.begin(), filesResults.end(), 0.0f );
+
+    Writer writer( "myOut.dat" );
+    writer.write( result );
+
+    return result;
 
 }
 

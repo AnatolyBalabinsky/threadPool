@@ -43,9 +43,9 @@ void ThreadPool::processing() {
 // std::cout << "start thread with id: " << std::this_thread::get_id() << std::endl;
 // }
     TaskFactory factory;
-    auto taskSum = factory.createTask( TaskFactory::TaskType::sum );
-    auto taskMult = factory.createTask( TaskFactory::TaskType::mult );
-    auto taskSumSqr = factory.createTask( TaskFactory::TaskType::sumSqr );
+    auto taskSum = factory.create( TaskFactory::TaskType::sum );
+    auto taskMult = factory.create( TaskFactory::TaskType::mult );
+    auto taskSumSqr = factory.create( TaskFactory::TaskType::sumSqr );
 
     while( true ) {
         if( threadsCreated ) {
