@@ -7,11 +7,14 @@
 #include <fstream>
 #include <cstdint>
 #include <memory>
+#include <future>
 
+template < typename ReturnType >
 class IThreadPoolTask {
 public:
 
     virtual void process() = 0;
+    virtual std::future< ReturnType > getFutureResult() = 0;
     virtual ~IThreadPoolTask() = default;
 
 protected:
@@ -26,7 +29,8 @@ class ThreadPoolTaskFactory {
 public:
 
     enum class TaskType { sum, mult, sumSqr };
-    static std::unique_ptr< IThreadPoolTask > createTask( TaskType param );
+    template < typename ReturnType >
+    static std::unique_ptr< IThreadPoolTask< ReturnType > > createTask( TaskType param );
 };
 
 #endif

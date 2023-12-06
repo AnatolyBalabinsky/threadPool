@@ -25,7 +25,7 @@ class TaskFactory {
 
 public:
 
-    enum class TaskType { sum, mult, sumSqr };
+    enum class TaskType { sum = 1, mult = 2, sumSqr = 3 };
     static std::unique_ptr< ITask > createTask( TaskType param );
 };
 

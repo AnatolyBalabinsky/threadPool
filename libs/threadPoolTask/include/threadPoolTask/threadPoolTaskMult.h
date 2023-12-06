@@ -3,18 +3,18 @@
 
 #include "threadPoolTask/iThreadPoolTask.h"
 
-class ThreadPoolTaskMult: public IThreadPoolTask {
+class ThreadPoolTaskMult: public IThreadPoolTask< float > {
 public:
 
     void process() override;
 
     void setFileData( const std::vector< float > data );
-    float getResult();
+    std::future< float > getFutureResult() override;
 
     virtual ~ThreadPoolTaskMult() = default;
 
 private:
-    float result;
+    std::promise< float > result;
     std::vector< float > fileData;
 };
 

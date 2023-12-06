@@ -5,6 +5,7 @@
 #include "task/taskMult.h"
 #include "task/taskSum.h"
 #include "task/taskSumSqr.h"
+#include "threadPool/threadPool.h"
 
 float FileCalculator::oneThread( std::string dirPath ) {
 
@@ -28,19 +29,19 @@ float FileCalculator::oneThread( std::string dirPath ) {
         Reader reader( begin->path() );
         Reader::FileData fd = reader.getFileData();
 
-        TaskFactory factory;
-        TaskFactory::TaskType type;
-        if( fd.operType == 1 ) {
-            type = TaskFactory::TaskType::sum;
-        }
-        if( fd.operType == 2 ) {
-            type = TaskFactory::TaskType::mult;
-        }
-        if( fd.operType == 3 ) {
-            type = TaskFactory::TaskType::sumSqr;
-        }
+// TaskFactory factory;
+// TaskFactory::TaskType type;
+// if( fd.operType == 1 ) {
+// type = TaskFactory::TaskType::sum;
+// }
+// if( fd.operType == 2 ) {
+// type = TaskFactory::TaskType::mult;
+// }
+// if( fd.operType == 3 ) {
+// type = TaskFactory::TaskType::sumSqr;
+// }
 
-        auto task = factory.createTask( type );
+        auto task = TaskFactory::createTask( static_cast< TaskFactory::TaskType >( fd.operType ) );
         auto currRes = task->process( fd.fileData );
         result += currRes;
 
@@ -125,3 +126,14 @@ float FileCalculator::multipleThread( std::string dirPath ) {
 
     return result;
 }
+
+float FileCalculator::pool( uint32_t threadCount, std::string dirPath ) {
+
+    ThreadPool pool( threadCount, dirPath );
+    pool.stop();
+
+    return pool.getResult();
+
+}
+
+

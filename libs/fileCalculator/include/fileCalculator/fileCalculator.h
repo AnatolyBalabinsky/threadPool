@@ -15,6 +15,7 @@ public:
 
     float oneThread( std::string dirPath );
     float multipleThread( std::string dirPath );
+    float pool( uint32_t threadCount, std::string dirPath );
 
 private:
     void reading( std::string dirPath );
