@@ -1,16 +1,14 @@
 #ifndef TASKSUMSQR_H
 #define TASKSUMSQR_H
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cstdint>
-#include "itask.h"
+#include <vector>
 
-class TaskSumSqr: public ITask {
+#include "task/taskCalculate.h"
+
+class TaskSumSqr: public TaskCalculate {
 public:
 
-    float process( const std::vector< float >& data ) override;
+    void process() override;
     virtual ~TaskSumSqr() = default;
 
 };

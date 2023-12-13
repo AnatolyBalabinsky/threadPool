@@ -1,16 +1,14 @@
 #ifndef TASKSUM_H
 #define TASKSUM_H
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cstdint>
-#include "itask.h"
+#include <vector>
 
-class TaskSum: public ITask {
+#include "task/taskCalculate.h"
+
+class TaskSum: public TaskCalculate {
 public:
 
-    float process( const std::vector< float >& data ) override;
+    void process() override;
     virtual ~TaskSum() = default;
 
 };

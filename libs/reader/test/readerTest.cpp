@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "reader/reader.h"
 
 TEST( ReaderTest, Creating ) {

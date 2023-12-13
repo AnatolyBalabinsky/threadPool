@@ -1,16 +1,14 @@
 #ifndef TASKMULT_H
 #define TASKMULT_H
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cstdint>
-#include "itask.h"
+#include <vector>
 
-class TaskMult: public ITask {
+#include "task/taskCalculate.h"
+
+class TaskMult: public TaskCalculate {
 public:
 
-    float process( const std::vector< float >& data ) override;
+    void process() override;
     virtual ~TaskMult() = default;
 
 };
