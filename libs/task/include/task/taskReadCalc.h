@@ -11,10 +11,10 @@ public:
 
     void process() override;
 
-    float getFileResult( std::string filePath );
-    void getFileResultWhrap( std::string filePath, float* result );
+    float getFileResult( const std::string& filePath );
+    void getFileResultWhrap( const std::string& filePath, float* result );
 
-    void setFilePath( std::string filePath );
+    void setFilePath( const std::string& filePath );
     void setResult( float* result );
 
 private:

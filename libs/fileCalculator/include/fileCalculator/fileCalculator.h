@@ -13,19 +13,11 @@ public:
 
     FileCalculator() = default;
 
-    std::vector< std::string > setFilesPaths( std::string dirPath );
+    std::vector< std::string > setFilesPaths( const std::string& dirPath );
 
-    float oneThread( std::string dirPath );
-    float multipleThread( std::string dirPath );
-    float pool( uint32_t threadCount, std::string dirPath );
-
-private:
-
-    void reading( std::string dirPath );
-    void processing( float& result, std::thread& read );
-
-    std::mutex mtx;
-    std::vector< Reader::FileData > fd;
+    float oneThread( const std::string& dirPath );
+    float multipleThread( const std::string& dirPath );
+    float pool( uint32_t threadCount, const std::string& dirPath );
 
 };
 

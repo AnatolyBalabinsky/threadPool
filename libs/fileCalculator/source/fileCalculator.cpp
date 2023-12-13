@@ -6,7 +6,7 @@
 #include "task/taskfactory.h"
 #include "threadPool/threadPool.h"
 
-std::vector< std::string > FileCalculator::setFilesPaths( std::string dirPath ) {
+std::vector< std::string > FileCalculator::setFilesPaths(const std::string &dirPath ) {
 
     std::vector< std::string > filesPaths;
     std::filesystem::path directory( dirPath );
@@ -30,7 +30,7 @@ std::vector< std::string > FileCalculator::setFilesPaths( std::string dirPath ) 
     return filesPaths;
 }
 
-float FileCalculator::oneThread( std::string dirPath ) {
+float FileCalculator::oneThread(const std::string &dirPath ) {
 
     std::vector< std::string > filesPaths = setFilesPaths( dirPath );
 
@@ -54,7 +54,7 @@ float FileCalculator::oneThread( std::string dirPath ) {
     return result;
 }
 
-float FileCalculator::multipleThread( std::string dirPath ) {
+float FileCalculator::multipleThread(const std::string &dirPath ) {
 
     std::vector< std::string > filesPaths = setFilesPaths( dirPath );
 
@@ -84,7 +84,7 @@ float FileCalculator::multipleThread( std::string dirPath ) {
     return result;
 }
 
-float FileCalculator::pool( uint32_t threadCount, std::string dirPath ) {
+float FileCalculator::pool(uint32_t threadCount, const std::string &dirPath ) {
 
     std::vector< std::string > filesPaths = setFilesPaths( dirPath );
     std::vector< float > filesResults( filesPaths.size() );
