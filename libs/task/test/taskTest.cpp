@@ -1,9 +1,5 @@
 #include <gtest/gtest.h>
 
-#include "task/itask.h"
-#include "task/taskMult.h"
-#include "task/taskSum.h"
-#include "task/taskSumSqr.h"
 #include "reader/reader.h"
 #include "task/taskfactory.h"
 

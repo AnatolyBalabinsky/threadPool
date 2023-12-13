@@ -15,7 +15,7 @@ public:
     virtual float getResult() const;
 
 protected:
-    TaskCalculate() = default;
+
     std::vector< float > data;
     float result { };
 

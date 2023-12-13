@@ -1,50 +1,34 @@
 #ifndef THREADPOOL_H
 #define THREADPOOL_H
 
-#include <string>
 #include <thread>
 #include <mutex>
-#include <functional>
-#include <condition_variable>
 #include <vector>
 #include <cstdint>
 #include <queue>
-#include <atomic>
-#include <future>
-#include <unordered_set>
 
 #include "task/itask.h"
-#include "reader/reader.h"
 
 class ThreadPool {
 public:
 
-    ThreadPool( uint32_t& threadCount, std::string& dirPath );
+    ThreadPool( uint32_t& threadCount );
 
-    void addTask( Reader::FileData fileData );
+    void addTask( std::unique_ptr< ITask > task );
 
     void stop();
 
-    float getResult();
-
-
 private:
 
-    bool isReading = true;
-    bool threadsCreated = false;
-    float result = 0;
+    void processing();
+
+    bool isCreatingTask  { true };
 
     uint32_t threadCount;
-    std::string dirPath;
     std::mutex mtx;
 
-    void processing();
-    void reading();
-
-    std::thread read;
     std::vector< std::thread > threads;
-
-    std::queue< Reader::FileData > taskQueue;
+    std::queue< std::unique_ptr< ITask > > taskQueue;
 
 };
 

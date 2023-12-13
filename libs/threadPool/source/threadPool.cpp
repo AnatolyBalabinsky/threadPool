@@ -1,31 +1,29 @@
 #include <filesystem>
 #include "threadPool/threadPool.h"
 
-ThreadPool::ThreadPool( uint32_t& threadCount, std::string& dirPath ) : threadCount( threadCount ), dirPath( dirPath ) {
-
-    read = std::thread( &ThreadPool::reading, this );
+ThreadPool::ThreadPool( uint32_t& threadCount ) : threadCount( threadCount ) {
 
     threads.reserve( threadCount );
 
     for( uint32_t i = 0; i < threadCount; ++i ) {
-        threads.emplace_back( std::thread( &ThreadPool::processing, this ) );
+        threads.emplace_back( &ThreadPool::processing, this );
     }
-
-    std::lock_guard< std::mutex > lock( mtx );
-    threadsCreated = true;
 
 }
 
-void ThreadPool::addTask( Reader::FileData fileData ) {
+void ThreadPool::addTask( std::unique_ptr< ITask > task ) {
 
     std::lock_guard< std::mutex > lock( mtx );
-    taskQueue.push( fileData );
+    taskQueue.push( std::move( task ) );
 
 }
 
 void ThreadPool::stop() {
 
-    read.join();
+    {
+        std::lock_guard< std::mutex > lock( mtx );
+        this->isCreatingTask = false;
+    }
 
     for( uint32_t i = 0; i < threadCount; ++i ) {
         threads[ i ].join();
@@ -33,117 +31,34 @@ void ThreadPool::stop() {
 
 }
 
-float ThreadPool::getResult() {
-    return result;
-}
-
 void ThreadPool::processing() {
-// {
-// std::lock_guard< std::mutex > lock( mtx );
-// std::cout << "start thread with id: " << std::this_thread::get_id() << std::endl;
-// }
-    TaskFactory factory;
-    auto taskSum = factory.create( TaskFactory::TaskType::sum );
-    auto taskMult = factory.create( TaskFactory::TaskType::mult );
-    auto taskSumSqr = factory.create( TaskFactory::TaskType::sumSqr );
 
     while( true ) {
-        if( threadsCreated ) {
-            float currRes;
 
-            Reader::FileData data;
+        std::unique_ptr< ITask > task;
 
-            {
-                std::lock_guard< std::mutex > lock( mtx );
-                if( !taskQueue.empty() ) {
+        {
+            std::lock_guard< std::mutex > lock( mtx );
+            if( !taskQueue.empty() ) {
 
-                    data = taskQueue.front();
-                    taskQueue.pop();
+                task = std::move( taskQueue.front() );
+                taskQueue.pop();
 
-                    // std::cout << "poped queue, size of queue: " << taskQueue.size() << std::endl;
-
-                }
             }
-            if( !data.fileData.empty() ) {
+        }
 
-                if( data.operType == 1 ) {
-                    currRes = taskSum->process( data.fileData );
-                }
-                if( data.operType == 2 ) {
-                    currRes = taskMult->process( data.fileData );
-                }
-                if( data.operType == 3 ) {
-                    currRes = taskSumSqr->process( data.fileData );
-                }
+        if( task.get() != nullptr ) {
+            task->process();
+        }
 
-                {
-                    std::lock_guard< std::mutex > lock( mtx );
-                    data.fileData.clear();
-                    result += currRes;
-                    // std::cout << "ThreadId = " << std::this_thread::get_id() << " Result = " << result << std::endl;
-                }
-            }
-
-
+        std::lock_guard< std::mutex > lock( mtx );
+        if( !isCreatingTask ) {
             {
-                std::lock_guard< std::mutex > lock( mtx );
-                currRes = 0;
-            }
-
-            {
-                std::lock_guard< std::mutex > lock( mtx );
-                if( taskQueue.empty() && isReading == false ) {
+                if( taskQueue.empty() ) {
                     break;
                 }
             }
-
         }
     }
-
-    std::lock_guard< std::mutex > lock( mtx );
-    // std::cout << "stop thread with id: " << std::this_thread::get_id() << std::endl;
 }
 
-void ThreadPool::reading() {
-
-    {
-        std::lock_guard< std::mutex > lock( mtx );
-        // std::cout << "start thread reading" << std::endl;
-    }
-
-    std::filesystem::path directory( dirPath );
-
-    if( !std::filesystem::exists( directory ) ) {
-
-        throw std::runtime_error( "Директория не существует" );
-
-    }
-
-    std::filesystem::directory_iterator begin( directory );
-    std::filesystem::directory_iterator end;
-
-    for( ; begin != end; ++begin ) {
-
-        {
-            // std::lock_guard< std::mutex > lock( mtx );
-            std::unique_lock< std::mutex > lock( mtx );
-            if( begin->path().filename() == "out.dat" ) {
-                continue;
-            }
-
-            Reader reader( begin->path() );
-            taskQueue.push( reader.getFileData() );
-            // std::cout << "added a file, size of queue: " << taskQueue.size() << std::endl;
-            lock.unlock();
-        }
-        // std::this_thread::sleep_for( std::chrono::microseconds( 1 ) );
-    }
-
-    {
-        std::lock_guard< std::mutex > lock( mtx );
-        isReading = false;
-
-        // std::cout << "stop thread reading" << std::endl;
-    }
-
-}

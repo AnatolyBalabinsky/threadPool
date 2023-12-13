@@ -9,11 +9,6 @@ public:
     virtual void process() = 0;
     virtual ~ITask() = default;
 
-protected:
-    ITask() = default;
-
-private:
-
 };
 
 
