@@ -4,12 +4,9 @@
 #include "fileCalculator/fileCalculator.h"
 #include "writer/writer.h"
 #include "task/taskfactory.h"
-#include "task/taskMult.h"
-#include "task/taskSum.h"
-#include "task/taskSumSqr.h"
-// #include "threadPool/threadPool.h"
+#include "threadPool/threadPool.h"
 
-std::vector< std::string > FileCalculator::getFilesPaths( std::string dirPath ) {
+std::vector< std::string > FileCalculator::setFilesPaths( std::string dirPath ) {
 
     std::vector< std::string > filesPaths;
     std::filesystem::path directory( dirPath );
@@ -30,39 +27,22 @@ std::vector< std::string > FileCalculator::getFilesPaths( std::string dirPath ) 
         filesPaths.push_back( begin->path() );
 
     }
-
     return filesPaths;
-
 }
-
-float FileCalculator::getFileResult( std::string filePath ) {
-
-    Reader reader( filePath );
-    Reader::FileData fd = reader.getFileData();
-
-    auto task = TaskFactory::create( static_cast< TaskFactory::TaskType >( fd.operType ) );
-    auto taskCalc = dynamic_cast< TaskCalculate* >(  task.get() );
-
-    taskCalc->setData( fd.fileData );
-    taskCalc->process();
-
-    return taskCalc->getResult();
-}
-
-void FileCalculator::getFileResultWhrap( std::string filePath, float& result ) {
-    result = getFileResult( filePath );
-}
-
 
 float FileCalculator::oneThread( std::string dirPath ) {
 
-    std::vector< std::string > filesPaths = getFilesPaths( dirPath );
+    std::vector< std::string > filesPaths = setFilesPaths( dirPath );
 
     std::vector< float > filesResults( filesPaths.size() );
 
     for( uint32_t i = 0; i != filesPaths.size(); i++ ) {
 
-        getFileResultWhrap( filesPaths[ i ], filesResults[ i ] );
+        auto task = TaskFactory::create( TaskFactory::TaskType::readCalc );
+        auto taskReadCalc = dynamic_cast< TaskReadCalc* >( task.get() );
+        taskReadCalc->setFilePath( filesPaths[ i ] );
+        taskReadCalc->setResult( &filesResults[ i ] );
+        task->process();
 
     }
 
@@ -76,14 +56,19 @@ float FileCalculator::oneThread( std::string dirPath ) {
 
 float FileCalculator::multipleThread( std::string dirPath ) {
 
-    std::vector< std::string > filesPaths = getFilesPaths( dirPath );
+    std::vector< std::string > filesPaths = setFilesPaths( dirPath );
 
     std::vector< float > filesResults( filesPaths.size() );
     std::vector< std::thread > threads;
 
     for( uint32_t i = 0; i != filesPaths.size(); i++ ) {
 
-        threads.push_back( std::thread( FileCalculator::getFileResultWhrap, filesPaths[ i ], std::ref( filesResults[ i ] ) ) );
+        auto task = TaskFactory::create( TaskFactory::TaskType::readCalc );
+        auto taskReadCalc = dynamic_cast< TaskReadCalc* >( task.get() );
+        taskReadCalc->setFilePath( filesPaths[ i ] );
+        taskReadCalc->setResult( &filesResults[ i ] );
+
+        threads.push_back( std::thread( &TaskReadCalc::process, *taskReadCalc  )  );
 
     }
 
@@ -101,19 +86,28 @@ float FileCalculator::multipleThread( std::string dirPath ) {
 
 float FileCalculator::pool( uint32_t threadCount, std::string dirPath ) {
 
-    std::vector< std::string > filesPaths = getFilesPaths( dirPath );
-
+    std::vector< std::string > filesPaths = setFilesPaths( dirPath );
     std::vector< float > filesResults( filesPaths.size() );
-    // ThreadPool pool( threadCount );
+
+    TaskFactory::TaskType type = TaskFactory::TaskType::readCalc;
+
+    ThreadPool pool( threadCount );
 
     for( uint32_t i = 0; i != filesPaths.size(); i++ ) {
 
+        auto task = TaskFactory::create( type );
+        auto taskReadCalc = dynamic_cast< TaskReadCalc* >( task.get() );
 
-        // pool.addTask();
+        taskReadCalc->setFilePath( filesPaths[ i ] );
+        taskReadCalc->setResult( &filesResults[ i ] );
+
+        auto taskU = std::make_unique< TaskReadCalc >( ( *taskReadCalc ) );
+
+        pool.addTask( std::move( taskU ) );
 
     }
 
-    // pool.stop();
+    pool.stop();
 
     float result = std::accumulate( filesResults.begin(), filesResults.end(), 0.0f );
 

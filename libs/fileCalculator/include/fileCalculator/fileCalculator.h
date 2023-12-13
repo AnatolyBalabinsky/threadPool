@@ -13,13 +13,11 @@ public:
 
     FileCalculator() = default;
 
+    std::vector< std::string > setFilesPaths( std::string dirPath );
+
     float oneThread( std::string dirPath );
     float multipleThread( std::string dirPath );
     float pool( uint32_t threadCount, std::string dirPath );
-
-    static float getFileResult( std::string filePath );
-    static void getFileResultWhrap( std::string filePath, float& result );
-    static std::vector< std::string > getFilesPaths( std::string dirPath );
 
 private:
 
