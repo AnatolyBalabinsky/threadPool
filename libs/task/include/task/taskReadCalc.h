@@ -12,7 +12,7 @@ public:
     void process() override;
 
     float getFileResult( const std::string& filePath );
-    void getFileResultWhrap( const std::string& filePath, float* result );
+    void getFileResultWrap( const std::string& filePath, float* result );
 
     void setFilePath( const std::string& filePath );
     void setResult( float* result );

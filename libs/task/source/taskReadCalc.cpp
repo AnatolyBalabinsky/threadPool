@@ -25,13 +25,13 @@ float TaskReadCalc::getFileResult(const std::string &filePath ) {
     return taskCalc->getResult();
 }
 
-void TaskReadCalc::getFileResultWhrap(const std::string &filePath, float* result ) {
+void TaskReadCalc::getFileResultWrap(const std::string &filePath, float* result ) {
     *result = getFileResult( filePath );
 }
 
 void TaskReadCalc::process() {
 
-    getFileResultWhrap( filePath, result );
+    getFileResultWrap( filePath, result );
 
 }
 

@@ -1,3 +1,5 @@
+#include <cstdint>
+
 #include "task/taskSum.h"
 
 void TaskSum::process() {

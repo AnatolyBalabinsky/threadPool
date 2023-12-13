@@ -1,4 +1,7 @@
+#include <cstdint>
+
 #include "task/taskMult.h"
+
 
 void TaskMult::process() {
 

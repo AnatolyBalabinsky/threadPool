@@ -1,3 +1,5 @@
+#include <cstdint>
+
 #include "task/taskSumSqr.h"
 
 void TaskSumSqr::process() {

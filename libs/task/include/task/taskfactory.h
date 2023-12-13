@@ -1,6 +1,8 @@
 #ifndef TASKFACTORY_H
 #define TASKFACTORY_H
 
+#include <memory>
+
 #include "task/taskSum.h"
 #include "task/taskMult.h"
 #include "task/taskSumSqr.h"

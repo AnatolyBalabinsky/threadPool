@@ -1,8 +1,6 @@
 #ifndef ITASK_H
 #define ITASK_H
 
-#include <memory>
-
 class ITask {
 public:
 

@@ -1,7 +1,6 @@
 #ifndef TASKCALCULATE_H
 #define TASKCALCULATE_H
 
-#include <memory>
 #include <vector>
 
 #include "task/itask.h"
