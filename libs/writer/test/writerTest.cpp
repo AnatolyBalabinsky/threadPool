@@ -1,6 +1,4 @@
 #include <gtest/gtest.h>
-#include <iostream>
-#include <fstream>
 
 #include "writer/writer.h"
 
