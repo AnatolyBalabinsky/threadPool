@@ -18,17 +18,33 @@ void ThreadPool::addTask( std::unique_ptr< ITask > task ) {
 
 }
 
+void ThreadPool::stopCreatingTask() {
+
+    std::lock_guard< std::mutex > lock( mtx );
+    this->isCreatingTask = false;
+
+}
+
 void ThreadPool::stop() {
 
-    {
-        std::lock_guard< std::mutex > lock( mtx );
-        this->isCreatingTask = false;
-    }
+    stopCreatingTask();
 
     for( uint32_t i = 0; i < threadCount; ++i ) {
         threads[ i ].join();
     }
 
+}
+
+bool ThreadPool::canStop() {
+
+    if( !isCreatingTask ) {
+
+        if( taskQueue.empty() ) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void ThreadPool::processing() {
@@ -52,13 +68,11 @@ void ThreadPool::processing() {
         }
 
         std::lock_guard< std::mutex > lock( mtx );
-        if( !isCreatingTask ) {
-            {
-                if( taskQueue.empty() ) {
-                    break;
-                }
-            }
+
+        if( canStop() ) {
+            break;
         }
+
     }
 }
 

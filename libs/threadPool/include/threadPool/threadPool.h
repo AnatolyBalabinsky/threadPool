@@ -22,7 +22,12 @@ private:
 
     void processing();
 
-    bool isCreatingTask  { true };
+    void stopCreatingTask();
+    bool canStop();
+
+    bool isCreatingTask  {
+        true
+    };
 
     uint32_t threadCount;
     std::mutex mtx;
